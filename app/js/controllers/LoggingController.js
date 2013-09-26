@@ -1,6 +1,6 @@
 (function(App) {
     App.LoggingController = Ember.ObjectController.extend({
-        loggingOptions: [
+        logTypes: [
             {label: 'Warning', value: 'warn'},
             {label: 'Info', value: 'info'},
             {label: 'Error', value: 'error'},

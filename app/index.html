@@ -23,19 +23,35 @@
             </div>
         </div>
 
-        {{outlet}}
+        <div class="container">
+            {{outlet}}
+        </div>
     </script>
 
     <script type="text/x-handlebars" data-template-name="logging">
-        {{view Ember.Select 
-            contentBinding="loggingOptions"
-            optionValuePath="content.value"
-            optionLabelPath="content.label"}}
+        <form role="form">
+            <div class="form-group">
+                <label for="loggingMessage">Message</label>
+                {{view Ember.TextField 
+                    id="loggingMessage"
+                    classNames="form-control"
+                    placeholder="Enter log message"
+                    contentBinding="message"}}
+            </div>
 
-        {{view Ember.TextField
-            contentBinding="message"}}
+            <div class="form-group">
+                <label for="loggingLogType">Log type</label>
+                {{view Ember.Select 
+                    id="loggingLogType"
+                    classNames="form-control"
+                    classNameBindings="content.value"
+                    contentBinding="logTypes"
+                    optionValuePath="content.value"
+                    optionLabelPath="content.label"}}
+            </div>
 
-        <button {{action "submit"}}>Submit</button>
+            <button type="submit" class="btn btn-success" {{action "submit"}}>Submit</button>
+        </form>
     </script>
 
     <script src="lib/jquery/js/jquery-1.9.1.js"></script>
