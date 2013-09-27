@@ -1,0 +1,12 @@
+.navbar {
+    color: $navbar-color;
+    background: $dark-bg;
+
+    .navbar-brand {
+        color: $navbar-color;
+
+        span {
+            vertical-align: bottom;
+        }
+    }
+}

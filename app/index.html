@@ -9,61 +9,187 @@
 </head>
 <body>
     <script type="text/x-handlebars">
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">WebApp Console</a>
-                </div>
-                
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="#logging">Logging</a></li>
-                    </ul>
-                </div><!--/.nav-collapse -->
-            </div>
-        </div>
+        {{render 'navigation'}}
 
         <div class="container">
             {{outlet}}
         </div>
+
+        {{#if isOverlayDisplayed}}
+            {{partial 'overlay'}}
+        {{/if}}
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="_overlay">
+        <div class="overlay">
+            <img src="images/logo-white.png" alt="GoodData"/>
+
+            <audio autoplay>
+                <source src="sounds/tadaaa.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="error">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">An error occured</h3>
+            </div>
+            
+            <div class="panel-body">
+                <p>{{view.displayedError}}</p>
+
+                <button type="button" class="btn btn-danger" {{action clearLastError}}>Close</button>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="navigation">
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">
+                        <img src="images/logo-white-mini.png" alt="GoodData" />
+                        <span>WebApp Management Console</span>
+                    </a>
+                </div>
+                
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        {{#each content}}
+                            <li {{bindAttr class="selected children:dropdown"}}>
+                                {{#if children}}
+                                    <a href="#{{unbound url}}" 
+                                        class="dropdown-toggle" 
+                                        data-toggle="dropdown">{{unbound label}} <b class="caret"></b></a>
+
+                                    <ul class="dropdown-menu">
+                                    {{#each children}}
+                                        <li {{bindAttr class="selected"}}>
+                                            <a href="#{{unbound url}}">{{unbound label}}</a>
+                                        </li>
+                                    {{/each}}
+                                    </ul>
+                                {{else}}
+                                    <a href="#{{unbound url}}">{{unbound label}}</a>
+                                {{/if}}
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
     </script>
 
     <script type="text/x-handlebars" data-template-name="logging">
+        {{control 'error' error}}
+
         <form role="form">
             <div class="form-group">
-                <label for="loggingMessage">Message</label>
+                <label for="logKey">Key</label>
                 {{view Ember.TextField 
-                    id="loggingMessage"
+                    id="logKey"
                     classNames="form-control"
-                    placeholder="Enter log message"
-                    contentBinding="message"}}
+                    placeholder="Enter key"
+                    valueBinding="key"}}
             </div>
 
             <div class="form-group">
-                <label for="loggingLogType">Log type</label>
+                <label for="logLevel">Log type</label>
                 {{view Ember.Select 
-                    id="loggingLogType"
+                    id="logLevel"
                     classNames="form-control"
-                    classNameBindings="content.value"
-                    contentBinding="logTypes"
+                    contentBinding="levels"
+                    valueBinding="level"
                     optionValuePath="content.value"
                     optionLabelPath="content.label"}}
             </div>
 
-            <button type="submit" class="btn btn-success" {{action "submit"}}>Submit</button>
+            <div class="form-group">
+                <button 
+                    type="submit" 
+                    class="btn btn-success" 
+                    {{action "submit"}}
+                    {{bindAttr disabled="cannotSubmit"}}>Submit</button>
+
+                {{#if loading}}
+                    <img src="images/loading-wheel-big.gif" alt="Loading..."/>
+                {{/if}}
+            </div>
+
+            <div class="checkbox">
+                {{view Ember.Checkbox
+                    elementId="clearOnSuccess"
+                    checkedBinding="clearOnSuccess"}}
+
+                <label for="clearOnSuccess">Clear on success</label>
+            </div>
         </form>
     </script>
 
+    <script type="text/x-handlebars" data-template-name="cache">
+        {{control 'error' error}}
+
+        <form role="form">
+            <div class="form-group">
+                <button 
+                    type="submit" 
+                    class="btn btn-success" 
+                    {{action "clear"}}
+                    {{bindAttr disabled="cannotSubmit"}}>Clear JBoss cache</button>
+
+                {{#if loading}}
+                    <img src="images/loading-wheel-big.gif" alt="Loading..."/>
+                {{/if}}
+            </div>
+        </form>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="monitoring">
+        <h3>Heap Memory</h3>
+
+        <div id="heapMemory"></div>
+
+        <h3>Requests</h3>
+
+        <div id="requests"></div>
+    </script>
+
+    <script>
+        ENV = {};
+
+        ENV.EXPERIMENTAL_CONTROL_HELPER = true;
+    </script>
     <script src="lib/jquery/js/jquery-1.9.1.js"></script>
     <script src="lib/bootstrap/js/bootstrap.js"></script>
     <script src="lib/ember/js/handlebars-1.0.0.js"></script>
     <script src="lib/ember/js/ember-1.0.0.js"></script>
-    <script src="lib/jolokia/jolokia.js"></script>
-    <script src="lib/jolokia/jolokia-simple.js"></script>
+
+    <script src="lib/d3/js/d3.v3.min.js"></script>
+    <script src="lib/d3/js/cubism.v1.min.js"></script>
+
+    <script src="lib/jolokia/js/jolokia.js"></script>
+    <script src="lib/jolokia/js/jolokia-simple.js"></script>
+    <script src="lib/jolokia/js/jolokia-cubism.js"></script>
 
     <script src="js/app.js"></script>
+
+    <script src="js/services/JolokiaFactory.js"></script>
+
     <script src="js/routes.js"></script>
+    <script src="js/routes/IndexRoute.js"></script>
     <script src="js/routes/LoggingRoute.js"></script>
+    <script src="js/routes/MonitoringRoute.js"></script>
+
+    <script src="js/views/ApplicationView.js"></script>
+    <script src="js/views/ErrorView.js"></script>
+    <script src="js/views/MonitoringView.js"></script>
+
+    <script src="js/controllers/ApplicationController.js"></script>
+    <script src="js/controllers/ErrorController.js"></script>
     <script src="js/controllers/LoggingController.js"></script>
+    <script src="js/controllers/NavigationController.js"></script>
+    <script src="js/controllers/MonitoringController.js"></script>
+    <script src="js/controllers/CacheController.js"></script>
 </body>
 </html>

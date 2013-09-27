@@ -1,40 +1,21 @@
 (function(App) {
-    App.LoggingController = Ember.Controller.extend({
-
-        levels: [
-            {label: 'Warning', value: 'WARN'},
-            {label: 'Info', value: 'INFO'},
-            {label: 'Error', value: 'ERROR'},
-            {label: 'Debug', value: 'DEBUG'}
-        ],
-
-        error: null,
-
-        clearOnSuccess: false,
-
-        level: null,
-
-        key: null,
+    App.CacheController = Ember.Controller.extend({
 
         loading: false,
 
-        idle: Ember.computed.not('loading'),
+        error: null,
 
-        canSubmit: Ember.computed.and('key', 'level', 'idle'),
-
-        cannotSubmit: Ember.computed.not('canSubmit'),
+        cannotSubmitBinding: Ember.Binding.oneWay('loading'),
 
         actions: {
-            submit: function() {
+            clear: function() {
                 if (this.get('cannotSubmit')) return false;
 
                 var j4p = App.JolokiaFactory.basic(),
-                    mbean = 'ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator',
-                    operation = 'setLoggerLevel',
-                    key = this.get('key'),
-                    level = this.get('level');
+                    mbean = 'com.gooddata:name=WebappCacheManager',
+                    operation = 'clearAll';
 
-                j4p.execute(mbean, operation, key, level, {
+                j4p.execute(mbean, operation, {
                     success: this._onSuccess.bind(this),
                     error: this._onError.bind(this),
                     ajaxError: this._onAjaxError.bind(this)
@@ -51,8 +32,6 @@
         _onSuccess: function() {
             this.set('loading', false);
             this.set('error', null);
-
-            if (this.get('clearOnSuccess')) this.set('key', null);
         },
 
         _onAjaxError: function() {

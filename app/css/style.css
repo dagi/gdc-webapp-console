@@ -1,1 +1,8 @@
-html, body { margin-top: 30px; }
+html, body { margin-top: 40px; }
+
+.navbar { color: #c2d3e4; background: #39414d; }
+.navbar .navbar-brand { color: #c2d3e4; }
+.navbar .navbar-brand span { vertical-align: bottom; }
+
+.overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(57, 65, 77, 0.5); z-index: 10000; }
+.overlay img { position: absolute; left: 0; top: 0; right: 0; bottom: 0; max-width: 80%; max-height: 80%; margin: auto; }
