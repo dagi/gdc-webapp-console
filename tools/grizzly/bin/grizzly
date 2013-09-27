@@ -1,0 +1,118 @@
+#!/usr/bin/env node
+
+var path = require('path'),
+    fs = require('fs'),
+    optimist = require('optimist'),
+    grizzly = require('../lib/grizzly');
+
+// Parse command line parameters
+var argv = optimist
+    .usage('Usage: $0 -b [backend] -p [port] -s [stub]')
+    .options('p', {
+        alias: 'port',
+        'default': 8443,
+        describe: 'local port to start server on'
+    })
+    .options('h', {
+        alias: 'help',
+        describe: 'show this help'
+    })
+    .options('b', {
+        alias: 'backend',
+        'default': 'secure.gooddata.com',
+        describe: 'GoodData backend host name'
+    })
+    .options('s', {
+        alias: 'stub',
+        describe: 'backend stub to use'
+    })
+    .options('d', {
+        alias: 'root-dir',
+        'default': 'html',
+        describe: 'root directory to use - html or distribution make sense'
+    })
+    .argv;
+
+// Show usage help
+if (argv.h) {
+    optimist.showHelp();
+    process.exit(0);
+}
+
+// User might have specified params via environment parameters
+// When started via rake, it is the easiest way of changing port
+// and or backend
+var envVars = {
+    p: 'port',
+    b: 'backend',
+    d: 'root-dir',
+    s: 'stub'
+};
+
+Object.keys(envVars).forEach(function(option) {
+    if (process.env[envVars[option]]) {
+        argv[option] = process.env[envVars[option]];
+    }
+});
+
+// Deprecated GDBACKEND and GDPORT
+if (process.env['GDBACKEND']) {
+    console.log('Warning: "GDBACKEND" env var is deprecated, use "backend" instead.');
+    argv['b'] = process.env['GDBACKEND'];
+}
+
+if (process.env['GDPORT']) {
+    console.log('Warning: "GDPORT" env var is deprecated, use "port" instead.');
+    argv['p'] = process.env['GDPORT'];
+}
+
+var stubsDir = __dirname + '/../../grizzly_stubs',
+    port = argv.p,
+    rootDir = argv.d,
+    backendHost = argv.b,
+    red = '\u001b[31m',
+    reset = '\u001b[0m',
+    stubFilePath;
+
+// User might have specified stub. If its file does not exist, let it know
+if (argv.s) {
+    stubFilePath = path.normalize(stubsDir + '/' + argv.s);
+
+    // There's no difference between stub with or without ".js"
+    if (!fs.existsSync(stubFilePath)) {
+        stubFilePath += '.js';
+    }
+
+    if (!fs.existsSync(stubFilePath)) {
+        console.log('Error: Stub not found. Expected in: ' + stubFilePath);
+        process.exit(1);
+    }
+}
+
+var documentRoot = path.join(__dirname, '../../..', rootDir);
+
+if (!fs.existsSync(documentRoot)) {
+    console.log('Error: Document root does not exist. Tried: ' + documentRoot);
+    process.exit(1);
+}
+
+// Run local web server
+grizzly.run({
+    documentRoot: documentRoot,
+    port: port,
+    backendHost: backendHost,
+    stubFilePath: stubFilePath,
+
+    success: function() {
+        console.log('  ()---()  Using backend ' + red + backendHost + reset);
+        console.log('  ( ^_^ )  Starting webserver at ' + red + 'https://localhost:' + port + '/' + reset);
+
+        if (stubFilePath) {
+            console.log(' \\ __I__ / Stub ' + red + stubFilePath + reset);
+        }
+    },
+
+    portInUse: function() {
+        console.log("Error: Port already in use. You probably left Grizzly unleashed somewhere else.");
+    }
+});
