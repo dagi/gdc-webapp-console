@@ -20,7 +20,7 @@
             },
 
             ponySequenceComplete: function() {
-                this._showOverlay();
+                window.location.href = 'https://www.youtube.com/watch?v=WWgXv58rt84';
             }
         }
     });

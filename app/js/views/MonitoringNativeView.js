@@ -74,7 +74,7 @@
             var memoryMetric = this.get('_memoryMetric');
             var requestsMetric = this.get('_requestsMetric');
 
-            d3.select('#heapMemory').call(function (div) {
+            d3.select('#heapMemory').insert('div').call(function (div) {
                 div.append("div")
                     .attr("class", "axis")
                     .call(context.axis().orient("top"));
@@ -95,7 +95,7 @@
             });
 
 
-             d3.select('#requests').call(function (div) {
+             d3.select('#requests').insert('div').call(function (div) {
                 div.append("div")
                     .attr("class", "axis")
                     .call(context.axis().orient("top"));
@@ -124,8 +124,8 @@
 
             if (!jolokia) return;
 
-            d3.select('#heapMemory').remove();
-            d3.select('#requests').remove();
+            d3.select('#heapMemory').select('div').remove();
+            d3.select('#requests').select('div').remove();
 
             jolokia.stop();
             this.set('_jolokia', null);

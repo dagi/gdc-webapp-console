@@ -17,7 +17,7 @@
             this._super();
 
             var gooddataSequenceDetector = KeySequenceDetector.create({ sequence: 'gooddata' });
-            var ponySequenceDetector = KeySequenceDetector.create({ sequence: 'pony' });
+            var ponySequenceDetector = KeySequenceDetector.create({ sequence: 'kokot' });
 
             gooddataSequenceDetector.on('complete', this._gooddataSequenceComplete.bind(this));
             ponySequenceDetector.on('complete', this._ponySequenceComplete.bind(this));
