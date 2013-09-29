@@ -7,7 +7,7 @@
 
         _showOverlay: function() {
             this.set('isOverlayDisplayed', true);
-            setTimeout(this._hideOverlay.bind(this), 2000);
+            setTimeout(this._hideOverlay.bind(this), 20000);
         },
 
         _hideOverlay: function() {
@@ -15,7 +15,11 @@
         },
 
         actions:{
-            keySequenceComplete: function() {
+            gooddataSequenceComplete: function() {
+                this._showOverlay();
+            },
+
+            ponySequenceComplete: function() {
                 this._showOverlay();
             }
         }

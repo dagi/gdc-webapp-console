@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <title>GDC WebApp Console</title>
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.css" />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
     <script type="text/x-handlebars">
@@ -145,7 +147,7 @@
         </form>
     </script>
 
-    <script type="text/x-handlebars" data-template-name="monitoring">
+    <script type="text/x-handlebars" data-template-name="monitoring/native">
         <h3>Heap Memory</h3>
 
         <div id="heapMemory"></div>
@@ -153,6 +155,12 @@
         <h3>Requests</h3>
 
         <div id="requests"></div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="monitoring/embedded">
+        <h3>Hystrix dashboard</h3>
+
+        <iframe id="hystrixDashboard" src="https://dpl-webapp-mgmt-console.na.intgdc.com/hystrix-dashboard/monitor/monitor.html?stream=http%3A%2F%2Flocalhost%3A8080%2Fmanagement-console%2Fturbine.stream%3Fcluster%3DWebappHystrixCluster"></iframe>
     </script>
 
     <script>
@@ -175,21 +183,22 @@
     <script src="js/app.js"></script>
 
     <script src="js/services/JolokiaFactory.js"></script>
+    <script src="js/services/KeySequenceDetector.js"></script>
 
     <script src="js/routes.js"></script>
     <script src="js/routes/IndexRoute.js"></script>
     <script src="js/routes/LoggingRoute.js"></script>
-    <script src="js/routes/MonitoringRoute.js"></script>
+    <script src="js/routes/MonitoringNativeRoute.js"></script>
+    <script src="js/routes/MonitoringEmbeddedRoute.js"></script>
 
     <script src="js/views/ApplicationView.js"></script>
     <script src="js/views/ErrorView.js"></script>
-    <script src="js/views/MonitoringView.js"></script>
+    <script src="js/views/MonitoringNativeView.js"></script>
 
     <script src="js/controllers/ApplicationController.js"></script>
     <script src="js/controllers/ErrorController.js"></script>
     <script src="js/controllers/LoggingController.js"></script>
     <script src="js/controllers/NavigationController.js"></script>
-    <script src="js/controllers/MonitoringController.js"></script>
     <script src="js/controllers/CacheController.js"></script>
 </body>
 </html>
