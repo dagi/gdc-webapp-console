@@ -7,7 +7,7 @@
 
         _showOverlay: function() {
             this.set('isOverlayDisplayed', true);
-            setTimeout(this._hideOverlay.bind(this), 20000);
+            setTimeout(this._hideOverlay.bind(this), 2000);
         },
 
         _hideOverlay: function() {
