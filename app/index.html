@@ -84,6 +84,8 @@
     </script>
 
     <script type="text/x-handlebars" data-template-name="logging">
+        <h3>Logging</h3>
+
         {{control 'error' error}}
 
         <form role="form">
@@ -130,13 +132,17 @@
     </script>
 
     <script type="text/x-handlebars" data-template-name="cache">
+        <h3>JBoss cache</h3>
+
         {{control 'error' error}}
+
+        <p>Do you sometimes feel like there's something dragging you down? Let your imagination run wild, clear the cache!</p>
 
         <form role="form">
             <div class="form-group">
                 <button 
                     type="submit" 
-                    class="btn btn-success" 
+                    class="btn btn-danger" 
                     {{action "clear"}}
                     {{bindAttr disabled="cannotSubmit"}}>Clear JBoss cache</button>
 
