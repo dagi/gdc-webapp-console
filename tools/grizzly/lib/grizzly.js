@@ -64,12 +64,14 @@ function createApp(documentRoot, backendHost, stubFilePath) {
 
     // Strip domain from set-cookie headers so GoodData works also
     // at different domain than the set one (at i.e. localhost)
-    // app.use(middleware.setCookieDomainStripper());
+    app.use(middleware.setCookieDomainStripper());
+    app.use(express.methodOverride());
+    app.use(express.bodyParser());
 
     // Setup proxy to backend
     var proxy = new httpProxy.RoutingProxy({
         target: {
-            https: false
+            https: true
         }
     });
 
@@ -86,7 +88,7 @@ function createApp(documentRoot, backendHost, stubFilePath) {
 
         proxy.proxyRequest(req, res, {
             host: backendHost,
-            port: 8080,
+            port: 443,
             target: {
                 // don't choke on self-signed certificates used by *.getgooddata.com
                 rejectUnauthorized: false
@@ -96,7 +98,7 @@ function createApp(documentRoot, backendHost, stubFilePath) {
 
     // Add routes which should be proxied to backend
     app.all('/gdc*', proxyToBackend);
-    app.all('/gdcwebapp*', proxyToBackend);
+    app.all('/wmc*', proxyToBackend);
     app.all('/gdc_img*', proxyToBackend);
     app.all('/captcha*', proxyToBackend);
     app.all('/projectTemplates*', proxyToBackend);

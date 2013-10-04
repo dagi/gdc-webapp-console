@@ -1,5 +1,5 @@
 (function(App) {
-    App.backend = '/gdcwebapp/management/jmx/';
+    App.backend = '/wmc/jmx/';
 
     App.JolokiaFactory = Ember.Object.create({
         basic: function(path) {
