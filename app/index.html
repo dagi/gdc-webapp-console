@@ -165,8 +165,7 @@
 
     <script type="text/x-handlebars" data-template-name="monitoring/embedded">
         <h3>Hystrix dashboard</h3>
-
-        <iframe id="hystrixDashboard" src="https://dpl-webapp-mgmt-console.na.intgdc.com/hystrix-dashboard/monitor/monitor.html?stream=http%3A%2F%2Flocalhost%3A8080%2Fmanagement-console%2Fturbine.stream%3Fcluster%3DWebappHystrixCluster"></iframe>
+        <iframe id="hystrixDashboard" src="{{unbound iframeUrl}}"></iframe>
     </script>
 
     <script>
@@ -202,6 +201,7 @@
     <script src="js/views/MonitoringNativeView.js"></script>
 
     <script src="js/controllers/ApplicationController.js"></script>
+    <script src="js/controllers/MonitoringEmbeddedController.js"></script>
     <script src="js/controllers/ErrorController.js"></script>
     <script src="js/controllers/LoggingController.js"></script>
     <script src="js/controllers/NavigationController.js"></script>
